@@ -33,6 +33,10 @@ DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() == "true"
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "m-cart.naijacloud.app,localhost,127.0.0.1").split(",")
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://m-cart.naijacloud.app",
+]
+
 
 # Application definition
 
