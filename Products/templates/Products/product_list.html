@@ -1,0 +1,844 @@
+
+{% extends "Products/base.html" %}
+
+{% block title %}Products{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Storefront hero */
+    .store-hero {
+        position: relative;
+        overflow: hidden;
+        background: #101828;
+        border-radius: 24px;
+        padding: 52px 48px;
+        margin-bottom: 42px;
+        color: white;
+        isolation: isolate;
+    }
+
+    .store-hero::before {
+        content: "";
+        position: absolute;
+        width: 340px;
+        height: 340px;
+        border-radius: 50%;
+        background: rgba(255, 107, 53, 0.14);
+        top: -150px;
+        right: -55px;
+        z-index: -1;
+    }
+
+    .store-hero::after {
+        content: "";
+        position: absolute;
+        width: 190px;
+        height: 190px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        right: 90px;
+        bottom: -120px;
+        z-index: -1;
+    }
+
+    .hero-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 107, 53, 0.14);
+        border: 1px solid rgba(255, 107, 53, 0.3);
+        color: #ff9a76;
+        border-radius: 50px;
+        padding: 8px 13px;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+    }
+
+    .hero-title {
+        max-width: 580px;
+        color: white;
+        font-size: clamp(2.2rem, 5vw, 3.6rem);
+        line-height: 1.12;
+        letter-spacing: -2px;
+        font-weight: 800;
+        margin-bottom: 18px;
+    }
+
+    .hero-title span {
+        color: #ff784e;
+    }
+
+    .hero-description {
+        max-width: 470px;
+        color: #cbd5e1;
+        font-size: 0.98rem;
+        line-height: 1.8;
+        margin-bottom: 26px;
+    }
+
+    .hero-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 20px;
+        border-radius: 11px;
+        background: #ff6b35;
+        color: white;
+        font-size: 0.9rem;
+        font-weight: 700;
+        transition: all 0.2s ease;
+    }
+
+    .hero-action:hover {
+        color: white;
+        background: #eb5420;
+        transform: translateY(-2px);
+    }
+
+    .hero-visual {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 240px;
+        position: relative;
+    }
+
+    .hero-bag {
+        width: 190px;
+        height: 190px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 42px;
+        transform: rotate(-8deg);
+        background: linear-gradient(145deg, #ff8c60, #ff6b35);
+        box-shadow: 0 25px 60px rgba(255, 107, 53, 0.25);
+    }
+
+    .hero-bag i {
+        font-size: 6.5rem;
+        color: white;
+    }
+
+    .hero-float {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 12px 15px;
+        border-radius: 13px;
+        background: white;
+        color: #101828;
+        font-size: 0.8rem;
+        font-weight: 700;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .hero-float i {
+        color: #ff6b35;
+        font-size: 1.2rem;
+    }
+
+    .hero-float-top {
+        top: 12px;
+        right: 0;
+    }
+
+    .hero-float-bottom {
+        bottom: 10px;
+        left: 0;
+    }
+
+    /* Store benefits */
+    .benefit-strip {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 15px;
+        margin-bottom: 45px;
+    }
+
+    .benefit-item {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding: 17px;
+        background: white;
+        border: 1px solid #e7eaf0;
+        border-radius: 15px;
+    }
+
+    .benefit-icon {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        width: 43px;
+        height: 43px;
+        background: #fff1eb;
+        color: #ff6b35;
+        border-radius: 12px;
+        font-size: 1.2rem;
+    }
+
+    .benefit-item strong {
+        display: block;
+        color: #101828;
+        font-size: 0.82rem;
+        margin-bottom: 4px;
+    }
+
+    .benefit-item small {
+        color: #667085;
+        font-size: 0.73rem;
+    }
+
+    /* Product section */
+    .products-section {
+        scroll-margin-top: 100px;
+    }
+
+    .section-kicker {
+        color: #ff6b35;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 8px;
+    }
+
+    .section-title {
+        color: #101828;
+        font-size: clamp(1.65rem, 3vw, 2.15rem);
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin-bottom: 8px;
+    }
+
+    .section-description {
+        color: #667085;
+        font-size: 0.9rem;
+        line-height: 1.7;
+        margin-bottom: 0;
+    }
+
+    .product-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 13px;
+        border: 1px solid #e7eaf0;
+        background: white;
+        border-radius: 50px;
+        color: #475467;
+        font-size: 0.8rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .product-count i {
+        color: #ff6b35;
+    }
+
+    /* Product cards */
+    .product-card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: white;
+        border: 1px solid #e7eaf0;
+        border-radius: 17px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(16, 24, 40, 0.025);
+        transition: transform 0.25s ease, box-shadow 0.25s ease,
+                    border-color 0.25s ease;
+    }
+
+    .product-card:hover {
+        transform: translateY(-6px);
+        border-color: #ffd0bd;
+        box-shadow: 0 18px 38px rgba(16, 24, 40, 0.09);
+    }
+
+    .product-image-wrap {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 245px;
+        padding: 15px;
+        background: #f8f9fb;
+        overflow: hidden;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.055);
+    }
+
+    .product-image-placeholder {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 9px;
+        width: 100%;
+        height: 100%;
+        color: #98a2b3;
+    }
+
+    .product-image-placeholder i {
+        font-size: 3.2rem;
+    }
+
+    .product-image-placeholder span {
+        font-size: 0.75rem;
+    }
+
+    .stock-badge {
+        position: absolute;
+        top: 13px;
+        left: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 10px;
+        border-radius: 7px;
+        background: #ecfdf3;
+        color: #027a48;
+        font-size: 0.68rem;
+        font-weight: 700;
+    }
+
+    .stock-badge.out-of-stock {
+        background: #fef3f2;
+        color: #b42318;
+    }
+
+    .product-card-body {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .product-category-label {
+        color: #ff6b35;
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    .product-name {
+        color: #101828;
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1.5;
+        margin-bottom: 9px;
+        overflow-wrap: anywhere;
+    }
+
+    .product-description {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        color: #667085;
+        font-size: 0.81rem;
+        line-height: 1.7;
+        margin-bottom: 17px;
+    }
+
+    .product-price {
+        color: #101828;
+        font-size: 1.35rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        margin-top: auto;
+        margin-bottom: 5px;
+        overflow-wrap: anywhere;
+    }
+
+    .product-price-label {
+        color: #98a2b3;
+        font-size: 0.72rem;
+        margin-bottom: 17px;
+    }
+
+    .product-divider {
+        border: 0;
+        border-top: 1px solid #f0f1f4;
+        margin: 0 0 15px;
+    }
+
+    .product-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .view-product-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        flex: 1;
+        min-height: 44px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: #101828;
+        color: white;
+        font-size: 0.82rem;
+        font-weight: 700;
+        transition: all 0.2s ease;
+    }
+
+    .view-product-btn:hover {
+        background: #ff6b35;
+        color: white;
+    }
+
+    .view-product-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
+        border: 1px solid #e7eaf0;
+        border-radius: 10px;
+        color: #475467;
+        background: white;
+    }
+
+    /* Empty state */
+    .empty-products {
+        text-align: center;
+        padding: 65px 20px;
+        background: white;
+        border: 1px dashed #d0d5dd;
+        border-radius: 20px;
+    }
+
+    .empty-icon {
+        width: 78px;
+        height: 78px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        border-radius: 23px;
+        background: #fff1eb;
+        color: #ff6b35;
+        font-size: 2.2rem;
+    }
+
+    .empty-products h3 {
+        color: #101828;
+        font-size: 1.3rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+
+    .empty-products p {
+        max-width: 380px;
+        margin: 0 auto;
+        color: #667085;
+        font-size: 0.88rem;
+        line-height: 1.8;
+    }
+
+    @media (max-width: 991.98px) {
+        .store-hero {
+            padding: 40px 30px;
+        }
+
+        .hero-visual {
+            min-height: 210px;
+        }
+
+        .hero-bag {
+            width: 150px;
+            height: 150px;
+        }
+
+        .hero-bag i {
+            font-size: 5rem;
+        }
+
+        .product-image-wrap {
+            height: 220px;
+        }
+
+        .product-card-body {
+            padding: 16px;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .store-hero {
+            padding: 35px 25px;
+            border-radius: 19px;
+            margin-bottom: 25px;
+        }
+
+        .hero-title {
+            letter-spacing: -1.4px;
+        }
+
+        .hero-visual {
+            min-height: 200px;
+            margin-top: 15px;
+        }
+
+        .hero-float-top {
+            right: 8px;
+        }
+
+        .hero-float-bottom {
+            left: 8px;
+        }
+
+        .benefit-strip {
+            gap: 9px;
+            margin-bottom: 35px;
+        }
+
+        .benefit-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 13px 10px;
+        }
+
+        .benefit-icon {
+            width: 37px;
+            height: 37px;
+            font-size: 1rem;
+        }
+
+        .benefit-item strong {
+            font-size: 0.74rem;
+        }
+
+        .benefit-item small {
+            font-size: 0.67rem;
+            line-height: 1.5;
+        }
+
+        .product-image-wrap {
+            height: 205px;
+        }
+
+        .product-card-body {
+            padding: 14px;
+        }
+
+        .product-name {
+            font-size: 0.9rem;
+        }
+
+        .product-price {
+            font-size: 1.15rem;
+        }
+
+        .view-product-btn {
+            font-size: 0.76rem;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .store-hero {
+            padding: 29px 20px;
+        }
+
+        .benefit-strip {
+            grid-template-columns: 1fr;
+        }
+
+        .benefit-item {
+            flex-direction: row;
+            align-items: center;
+            padding: 13px;
+        }
+
+        .product-image-wrap {
+            height: 160px;
+            padding: 10px;
+        }
+
+        .product-card-body {
+            padding: 11px;
+        }
+
+        .product-description {
+            font-size: 0.75rem;
+        }
+
+        .view-product-btn {
+            gap: 5px;
+            padding: 9px 7px;
+            font-size: 0.72rem;
+        }
+
+        .view-product-icon {
+            display: none;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .product-card,
+        .product-image,
+        .hero-action,
+        .view-product-btn {
+            transition: none;
+        }
+
+        .product-card:hover,
+        .hero-action:hover {
+            transform: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero section -->
+<section class="store-hero">
+    <div class="row align-items-center g-4">
+
+        <div class="col-md-7">
+            <div class="hero-eyebrow">
+                <i class="bi bi-stars"></i>
+                Welcome to M-CART
+            </div>
+
+            <h1 class="hero-title">
+                Good finds.<br>
+                <span>Great choices.</span>
+            </h1>
+
+            <p class="hero-description">
+                Discover products that fit your needs, explore our collection,
+                and find your next favorite item. Your shopping journey starts here.
+            </p>
+
+            <a href="#products" class="hero-action">
+                Explore Products
+                <i class="bi bi-arrow-down-right"></i>
+            </a>
+        </div>
+
+        <div class="col-md-5">
+            <div class="hero-visual" aria-hidden="true">
+
+                <div class="hero-bag">
+                    <i class="bi bi-bag-heart-fill"></i>
+                </div>
+
+                <div class="hero-float hero-float-top">
+                    <i class="bi bi-bag-check-fill"></i>
+                    Your next great find
+                </div>
+
+                <div class="hero-float hero-float-bottom">
+                    <i class="bi bi-heart-fill"></i>
+                    Shopping made simple
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Store benefits -->
+<section class="benefit-strip" aria-label="Shopping benefits">
+
+    <div class="benefit-item">
+        <div class="benefit-icon">
+            <i class="bi bi-grid-1x2-fill"></i>
+        </div>
+        <div>
+            <strong>Explore Products</strong>
+            <small>Discover our collection</small>
+        </div>
+    </div>
+
+    <div class="benefit-item">
+        <div class="benefit-icon">
+            <i class="bi bi-shield-check"></i>
+        </div>
+        <div>
+            <strong>Secure Shopping</strong>
+            <small>Shop with confidence</small>
+        </div>
+    </div>
+
+    <div class="benefit-item">
+        <div class="benefit-icon">
+            <i class="bi bi-cart-check"></i>
+        </div>
+        <div>
+            <strong>Easy Ordering</strong>
+            <small>A simple shopping journey</small>
+        </div>
+    </div>
+
+</section>
+
+<!-- Products section -->
+<section class="products-section" id="products">
+
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-end gap-3 mb-4">
+
+        <div>
+            <div class="section-kicker">Made for you</div>
+            <h2 class="section-title">Explore our products</h2>
+            <p class="section-description">
+                Find something you love and make it yours.
+            </p>
+        </div>
+
+        <div class="product-count">
+            <i class="bi bi-grid-fill"></i>
+            {% with product_count=products|length %}
+                {{ product_count }} product{{ product_count|pluralize }}
+            {% endwith %}
+        </div>
+
+    </div>
+
+    <div class="row g-3 g-md-4">
+
+        {% for product in products %}
+
+            <div class="col-6 col-lg-4">
+
+                <article class="product-card">
+
+                    <!-- Product image -->
+                    <div class="product-image-wrap">
+
+                        {% if product.image %}
+                            <img
+                                src="{{ product.image.url }}"
+                                class="product-image"
+                                alt="{{ product.name }}"
+                                loading="lazy"
+                            >
+                        {% else %}
+                            <div class="product-image-placeholder">
+                                <i class="bi bi-image"></i>
+                                <span>Image coming soon</span>
+                            </div>
+                        {% endif %}
+
+                        {% if product.stock > 0 %}
+                            <span class="stock-badge">
+                                <i class="bi bi-check-circle-fill"></i>
+                                In stock
+                            </span>
+                        {% else %}
+                            <span class="stock-badge out-of-stock">
+                                <i class="bi bi-x-circle-fill"></i>
+                                Sold out
+                            </span>
+                        {% endif %}
+
+                    </div>
+
+                    <!-- Product information -->
+                    <div class="product-card-body">
+
+                        <div class="product-category-label">
+                            M-CART COLLECTION
+                        </div>
+
+                        <h3 class="product-name">
+                            {{ product.name }}
+                        </h3>
+
+                        <p class="product-description">
+                            {{ product.description|default:"Discover more about this product." }}
+                        </p>
+
+                        <div class="product-price">
+                            ₦{{ product.price|floatformat:2 }}
+                        </div>
+
+                        <div class="product-price-label">
+                            {% if product.stock > 0 %}
+                                Available to order
+                            {% else %}
+                                Currently unavailable
+                            {% endif %}
+                        </div>
+
+                        <hr class="product-divider">
+
+                        <div class="product-actions">
+
+                            <a
+                                href="{% url 'Products:product_detail' product.pk %}"
+                                class="view-product-btn"
+                                aria-label="View {{ product.name }}"
+                            >
+                                View Product
+                                <i class="bi bi-arrow-up-right"></i>
+                            </a>
+
+                            <span
+                                class="view-product-icon"
+                                aria-hidden="true"
+                            >
+                                <i class="bi bi-eye"></i>
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+        {% empty %}
+
+            <div class="col-12">
+
+                <div class="empty-products">
+
+                    <div class="empty-icon">
+                        <i class="bi bi-bag"></i>
+                    </div>
+
+                    <h3>Nothing here just yet</h3>
+
+                    <p>
+                        We're getting things ready for you.
+                        Check back soon to discover products in our collection.
+                    </p>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

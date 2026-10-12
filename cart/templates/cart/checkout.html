@@ -1,0 +1,585 @@
+
+{% extends "Products/base.html" %}
+
+{% block title %}Checkout | M-CART{% endblock %}
+
+{% block extra_css %}
+<style>
+    .checkout-page {
+        padding: 12px 0 48px;
+        color: #101828;
+    }
+
+    .checkout-heading {
+        margin-bottom: 30px;
+    }
+
+    .checkout-eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+        color: #ff6b35;
+        font-size: .75rem;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+    }
+
+    .checkout-title {
+        margin: 0;
+        font-size: clamp(1.9rem, 4vw, 2.5rem);
+        font-weight: 850;
+        letter-spacing: -1.2px;
+    }
+
+    .checkout-subtitle {
+        margin: 10px 0 0;
+        color: #667085;
+        font-size: .9rem;
+        line-height: 1.7;
+    }
+
+    .checkout-steps {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 22px;
+    }
+
+    .checkout-step {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #667085;
+        font-size: .78rem;
+        font-weight: 700;
+    }
+
+    .step-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border: 1px solid #d0d5dd;
+        border-radius: 50%;
+        background: white;
+        color: #667085;
+        font-size: .76rem;
+    }
+
+    .checkout-step.active {
+        color: #101828;
+    }
+
+    .checkout-step.active .step-number {
+        border-color: #ff6b35;
+        background: #ff6b35;
+        color: white;
+    }
+
+    .step-line {
+        width: 35px;
+        height: 1px;
+        background: #d0d5dd;
+    }
+
+    .checkout-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 360px;
+        align-items: start;
+        gap: 25px;
+    }
+
+    .checkout-main,
+    .checkout-summary {
+        min-width: 0;
+        overflow: hidden;
+        border: 1px solid #eaecf0;
+        border-radius: 18px;
+        background: white;
+        box-shadow: 0 5px 22px rgba(16, 24, 40, .045);
+    }
+
+    .checkout-section-heading {
+        display: flex;
+        align-items: flex-start;
+        gap: 13px;
+        padding: 22px 24px;
+        border-bottom: 1px solid #eaecf0;
+    }
+
+    .section-icon {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: #fff1eb;
+        color: #ff6b35;
+        font-size: 1.2rem;
+    }
+
+    .checkout-section-heading h2 {
+        margin: 1px 0 5px;
+        font-size: 1rem;
+        font-weight: 850;
+    }
+
+    .checkout-section-heading p {
+        margin: 0;
+        color: #667085;
+        font-size: .8rem;
+        line-height: 1.6;
+    }
+
+    .checkout-form-body {
+        padding: 25px 24px;
+    }
+
+    /* Style standard Django form fields without changing their names. */
+    .checkout-form-body form p {
+        margin-bottom: 19px;
+    }
+
+    .checkout-form-body form label {
+        display: block;
+        margin-bottom: 8px;
+        color: #344054;
+        font-size: .84rem;
+        font-weight: 750;
+    }
+
+    .checkout-form-body form input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+    .checkout-form-body form select,
+    .checkout-form-body form textarea {
+        display: block;
+        width: 100%;
+        min-height: 47px;
+        padding: 11px 13px;
+        border: 1px solid #d0d5dd;
+        border-radius: 10px;
+        outline: none;
+        background: #fff;
+        color: #101828;
+        font: inherit;
+        font-size: .88rem;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .checkout-form-body form textarea {
+        min-height: 110px;
+        resize: vertical;
+    }
+
+    .checkout-form-body form input:focus,
+    .checkout-form-body form select:focus,
+    .checkout-form-body form textarea:focus {
+        border-color: #ff8b62;
+        box-shadow: 0 0 0 4px rgba(255, 107, 53, .11);
+    }
+
+    .checkout-form-body form input[type="checkbox"],
+    .checkout-form-body form input[type="radio"] {
+        accent-color: #ff6b35;
+    }
+
+    .checkout-form-body form .helptext,
+    .checkout-form-body form small {
+        display: block;
+        margin-top: 6px;
+        color: #667085;
+        font-size: .76rem;
+        line-height: 1.6;
+    }
+
+    .checkout-form-body form ul.errorlist {
+        margin: 7px 0 0;
+        padding: 0;
+        list-style: none;
+        color: #b42318;
+        font-size: .8rem;
+    }
+
+    .checkout-form-body form .errorlist li {
+        margin-bottom: 4px;
+    }
+
+    .checkout-form-body form .errorlist + input,
+    .checkout-form-body form .errorlist + select,
+    .checkout-form-body form .errorlist + textarea {
+        border-color: #f04438;
+    }
+
+    .place-order-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        min-height: 53px;
+        margin-top: 24px;
+        padding: 14px 18px;
+        border: 1px solid #ff6b35;
+        border-radius: 11px;
+        background: #ff6b35;
+        color: white;
+        font-size: .9rem;
+        font-weight: 850;
+        cursor: pointer;
+        transition: .2s ease;
+    }
+
+    .place-order-btn:hover {
+        border-color: #eb5420;
+        background: #eb5420;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px rgba(255, 107, 53, .2);
+    }
+
+    .checkout-summary {
+        position: sticky;
+        top: 100px;
+    }
+
+    .summary-heading {
+        padding: 22px 23px;
+        border-bottom: 1px solid #eaecf0;
+    }
+
+    .summary-heading h2 {
+        margin: 0 0 6px;
+        font-size: 1.05rem;
+        font-weight: 850;
+    }
+
+    .summary-heading p {
+        margin: 0;
+        color: #667085;
+        font-size: .8rem;
+    }
+
+    .summary-items {
+        padding: 8px 23px;
+    }
+
+    .summary-item {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 16px 0;
+        border-bottom: 1px solid #f0f2f5;
+    }
+
+    .summary-item:last-child {
+        border-bottom: 0;
+    }
+
+    .summary-item-name {
+        color: #344054;
+        font-size: .84rem;
+        font-weight: 750;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
+    }
+
+    .summary-item-quantity {
+        margin-top: 4px;
+        color: #667085;
+        font-size: .76rem;
+    }
+
+    .summary-item-price {
+        flex-shrink: 0;
+        color: #101828;
+        font-size: .86rem;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .summary-bottom {
+        padding: 20px 23px 23px;
+        border-top: 1px solid #eaecf0;
+        background: #fcfcfd;
+    }
+
+    .summary-total-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .summary-total-label {
+        color: #344054;
+        font-size: .92rem;
+        font-weight: 800;
+    }
+
+    .summary-total-value {
+        color: #101828;
+        font-size: 1.3rem;
+        font-weight: 900;
+        overflow-wrap: anywhere;
+        text-align: right;
+    }
+
+    .summary-total-note {
+        margin-top: 9px;
+        color: #667085;
+        font-size: .74rem;
+        line-height: 1.6;
+    }
+
+    .checkout-trust {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+        margin: 0 23px 22px;
+        padding: 14px;
+        border: 1px solid #d1fadf;
+        border-radius: 11px;
+        background: #f6fef9;
+    }
+
+    .checkout-trust i {
+        flex-shrink: 0;
+        color: #039855;
+        font-size: 1.1rem;
+    }
+
+    .checkout-trust strong {
+        display: block;
+        margin-bottom: 4px;
+        color: #027a48;
+        font-size: .79rem;
+    }
+
+    .checkout-trust span {
+        display: block;
+        color: #475467;
+        font-size: .74rem;
+        line-height: 1.6;
+    }
+
+    .checkout-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 21px;
+        color: #667085;
+        font-size: .84rem;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .checkout-back:hover {
+        color: #ff6b35;
+    }
+
+    @media (max-width: 991.98px) {
+        .checkout-layout {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .checkout-summary {
+            position: static;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .checkout-section-heading,
+        .checkout-form-body {
+            padding: 19px 16px;
+        }
+
+        .summary-heading {
+            padding: 20px 17px;
+        }
+
+        .summary-items {
+            padding-right: 17px;
+            padding-left: 17px;
+        }
+
+        .summary-bottom {
+            padding: 18px 17px;
+        }
+
+        .checkout-trust {
+            margin-right: 17px;
+            margin-left: 17px;
+        }
+
+        .step-line {
+            width: 18px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .checkout-page *,
+        .checkout-page *::before,
+        .checkout-page *::after {
+            transition: none !important;
+            animation: none !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="checkout-page">
+
+    <header class="checkout-heading">
+        <div class="checkout-eyebrow">
+            <i class="bi bi-bag-check-fill"></i>
+            Almost there
+        </div>
+
+        <h1 class="checkout-title">Complete your order</h1>
+
+        <p class="checkout-subtitle">
+            Confirm your details and review your items before placing your order.
+        </p>
+
+        <div class="checkout-steps" aria-label="Checkout progress">
+            <div class="checkout-step">
+                <span class="step-number">
+                    <i class="bi bi-check-lg"></i>
+                </span>
+                Cart
+            </div>
+
+            <span class="step-line"></span>
+
+            <div class="checkout-step active">
+                <span class="step-number">2</span>
+                Checkout
+            </div>
+
+            <span class="step-line"></span>
+
+            <div class="checkout-step">
+                <span class="step-number">3</span>
+                Confirmation
+            </div>
+        </div>
+    </header>
+
+    <div class="checkout-layout">
+
+        <!-- Checkout form -->
+        <section class="checkout-main">
+
+            <div class="checkout-section-heading">
+                <div class="section-icon">
+                    <i class="bi bi-person-lines-fill"></i>
+                </div>
+
+                <div>
+                    <h2>Order details</h2>
+                    <p>
+                        Complete the fields below to continue with your order.
+                    </p>
+                </div>
+            </div>
+
+            <div class="checkout-form-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    {{ form.as_p }}
+
+                    <button type="submit" class="place-order-btn">
+                        <i class="bi bi-bag-check-fill"></i>
+                        Place Order
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+                </form>
+
+                <a
+                    href="{% url 'cart:cart_detail' %}"
+                    class="checkout-back"
+                >
+                    <i class="bi bi-arrow-left"></i>
+                    Return to cart
+                </a>
+            </div>
+
+        </section>
+
+        <!-- Order summary -->
+        <aside class="checkout-summary">
+
+            <div class="summary-heading">
+                <h2>Order summary</h2>
+                <p>Review what you're ordering.</p>
+            </div>
+
+            <div class="summary-items">
+
+                {% for item in items %}
+                    <div class="summary-item">
+
+                        <div>
+                            <div class="summary-item-name">
+                                {{ item.product.name }}
+                            </div>
+
+                            <div class="summary-item-quantity">
+                                Quantity: {{ item.quantity }}
+                            </div>
+                        </div>
+
+                        <div class="summary-item-price">
+                            ₦{{ item.product.price|floatformat:2 }}
+                        </div>
+
+                    </div>
+                {% empty %}
+                    <p class="text-muted small py-3 mb-0">
+                        No items are available to display.
+                    </p>
+                {% endfor %}
+
+            </div>
+
+            <div class="summary-bottom">
+                <div class="summary-total-row">
+                    <span class="summary-total-label">Total</span>
+
+                    <span class="summary-total-value">
+                        ₦{{ total|floatformat:2 }}
+                    </span>
+                </div>
+
+                <p class="summary-total-note">
+                    Any applicable delivery fees or additional charges will
+                    be confirmed by your checkout process.
+                </p>
+            </div>
+
+            <div class="checkout-trust">
+                <i class="bi bi-shield-check"></i>
+
+                <div>
+                    <strong>Your order matters</strong>
+                    <span>
+                        Review your details carefully before submitting
+                        your order.
+                    </span>
+                </div>
+            </div>
+
+        </aside>
+
+    </div>
+
+</div>
+{% endblock %}

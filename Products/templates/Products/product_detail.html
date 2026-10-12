@@ -1,0 +1,626 @@
+
+{% extends "Products/base.html" %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .detail-breadcrumb {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 28px;
+        color: #98a2b3;
+        font-size: 0.82rem;
+    }
+
+    .detail-breadcrumb a {
+        color: #667085;
+        transition: color 0.2s ease;
+    }
+
+    .detail-breadcrumb a:hover {
+        color: #ff6b35;
+    }
+
+    .detail-breadcrumb i {
+        font-size: 0.7rem;
+    }
+
+    .detail-breadcrumb .current {
+        color: #101828;
+        font-weight: 600;
+        overflow-wrap: anywhere;
+    }
+
+    .detail-layout {
+        align-items: stretch;
+    }
+
+    /* Product image panel */
+    .detail-image-panel {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 430px;
+        padding: 35px;
+        background: #f0f2f6;
+        border: 1px solid #e7eaf0;
+        border-radius: 22px;
+        overflow: hidden;
+    }
+
+    .detail-image-panel::before {
+        content: "";
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: rgba(255, 107, 53, 0.07);
+        top: -120px;
+        right: -100px;
+    }
+
+    .detail-image {
+        position: relative;
+        z-index: 1;
+        display: block;
+        width: 100%;
+        max-height: 430px;
+        object-fit: contain;
+        border-radius: 12px;
+        transition: transform 0.35s ease;
+    }
+
+    .detail-image-panel:hover .detail-image {
+        transform: scale(1.025);
+    }
+
+    .detail-image-placeholder {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 13px;
+        color: #98a2b3;
+        text-align: center;
+    }
+
+    .detail-image-placeholder i {
+        font-size: 5rem;
+    }
+
+    .detail-image-placeholder span {
+        font-size: 0.88rem;
+    }
+
+    .image-corner-label {
+        position: absolute;
+        z-index: 2;
+        top: 18px;
+        left: 18px;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 9px;
+        background: rgba(255, 255, 255, 0.9);
+        color: #344054;
+        font-size: 0.74rem;
+        font-weight: 700;
+        backdrop-filter: blur(8px);
+    }
+
+    .image-corner-label i {
+        color: #ff6b35;
+    }
+
+    /* Product details */
+    .detail-info {
+        display: flex;
+        flex-direction: column;
+        padding: 12px 8px 12px 30px;
+    }
+
+    .detail-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #ff6b35;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 1.3px;
+        text-transform: uppercase;
+        margin-bottom: 15px;
+    }
+
+    .detail-eyebrow::before {
+        content: "";
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: #ff6b35;
+        border-radius: 5px;
+    }
+
+    .detail-title {
+        color: #101828;
+        font-size: clamp(1.8rem, 3vw, 2.6rem);
+        font-weight: 800;
+        letter-spacing: -1.3px;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+        margin-bottom: 20px;
+    }
+
+    .detail-price {
+        color: #101828;
+        font-size: clamp(1.8rem, 3vw, 2.4rem);
+        font-weight: 800;
+        letter-spacing: -1px;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+    }
+
+    .price-caption {
+        color: #98a2b3;
+        font-size: 0.78rem;
+        margin-top: 7px;
+    }
+
+    .detail-divider {
+        border: 0;
+        border-top: 1px solid #eaecf0;
+        margin: 25px 0;
+        opacity: 1;
+    }
+
+    .description-heading {
+        color: #101828;
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .detail-description {
+        color: #667085;
+        font-size: 0.9rem;
+        line-height: 1.9;
+        overflow-wrap: anywhere;
+        white-space: normal;
+    }
+
+    /* Stock status */
+    .detail-stock {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 8px;
+        padding: 15px;
+        border: 1px solid #d1fadf;
+        border-radius: 12px;
+        background: #f6fef9;
+    }
+
+    .detail-stock.stock-unavailable {
+        border-color: #fecdca;
+        background: #fef3f2;
+    }
+
+    .stock-icon {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+        background: #dcfae6;
+        color: #039855;
+        font-size: 1.15rem;
+    }
+
+    .stock-unavailable .stock-icon {
+        background: #fee4e2;
+        color: #d92d20;
+    }
+
+    .stock-title {
+        color: #027a48;
+        font-size: 0.84rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .stock-unavailable .stock-title {
+        color: #b42318;
+    }
+
+    .stock-description {
+        color: #667085;
+        font-size: 0.76rem;
+        line-height: 1.5;
+    }
+
+    /* Purchase controls */
+    .purchase-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 23px;
+    }
+
+    .add-cart-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 11px;
+        width: 100%;
+        min-height: 54px;
+        padding: 14px 20px;
+        border: 1px solid #ff6b35;
+        border-radius: 12px;
+        background: #ff6b35;
+        color: white;
+        font-size: 0.92rem;
+        font-weight: 800;
+        text-align: center;
+        transition: background 0.2s ease, transform 0.2s ease,
+                    box-shadow 0.2s ease;
+    }
+
+    .add-cart-btn:hover {
+        background: #eb5420;
+        border-color: #eb5420;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(255, 107, 53, 0.2);
+    }
+
+    .add-cart-btn:focus-visible,
+    .back-to-store:focus-visible {
+        outline: 3px solid rgba(255, 107, 53, 0.4);
+        outline-offset: 3px;
+    }
+
+    .add-cart-btn.disabled-btn {
+        background: #e4e7ec;
+        border-color: #e4e7ec;
+        color: #667085;
+        cursor: not-allowed;
+        pointer-events: none;
+        box-shadow: none;
+        transform: none;
+    }
+
+    .back-to-store {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        width: 100%;
+        min-height: 48px;
+        padding: 12px 18px;
+        border: 1px solid #d0d5dd;
+        border-radius: 12px;
+        background: white;
+        color: #344054;
+        font-size: 0.86rem;
+        font-weight: 700;
+        transition: all 0.2s ease;
+    }
+
+    .back-to-store:hover {
+        border-color: #101828;
+        background: #f9fafb;
+        color: #101828;
+    }
+
+    /* Trust information */
+    .detail-trust {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 25px;
+    }
+
+    .trust-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        color: #667085;
+        font-size: 0.76rem;
+        line-height: 1.6;
+    }
+
+    .trust-item i {
+        flex-shrink: 0;
+        margin-top: 2px;
+        color: #ff6b35;
+        font-size: 1.05rem;
+    }
+
+    .trust-item strong {
+        display: block;
+        color: #344054;
+        font-size: 0.78rem;
+        margin-bottom: 3px;
+    }
+
+    .detail-bottom-note {
+        margin-top: 28px;
+        padding-top: 18px;
+        border-top: 1px solid #eaecf0;
+        color: #98a2b3;
+        font-size: 0.76rem;
+        line-height: 1.7;
+    }
+
+    @media (max-width: 991.98px) {
+        .detail-info {
+            padding: 8px 0 0;
+        }
+
+        .detail-image-panel {
+            min-height: 350px;
+            padding: 25px;
+        }
+
+        .detail-image {
+            max-height: 350px;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .detail-breadcrumb {
+            margin-bottom: 20px;
+            font-size: 0.76rem;
+        }
+
+        .detail-image-panel {
+            min-height: 290px;
+            padding: 20px;
+            border-radius: 17px;
+        }
+
+        .detail-image {
+            max-height: 290px;
+        }
+
+        .detail-title {
+            font-size: 1.8rem;
+        }
+
+        .detail-price {
+            font-size: 1.9rem;
+        }
+
+        .detail-divider {
+            margin: 20px 0;
+        }
+
+        .detail-trust {
+            gap: 15px 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Breadcrumb navigation -->
+<nav class="detail-breadcrumb" aria-label="Breadcrumb">
+    <a href="{% url 'Products:product_list' %}">
+        <i class="bi bi-house-door"></i> Home
+    </a>
+
+    <i class="bi bi-chevron-right"></i>
+
+    <a href="{% url 'Products:product_list' %}">
+        Products
+    </a>
+
+    <i class="bi bi-chevron-right"></i>
+
+    <span class="current">{{ product.name }}</span>
+</nav>
+
+<!-- Product detail -->
+<div class="row g-4 g-lg-5 detail-layout">
+
+    <!-- Image column -->
+    <div class="col-lg-6">
+
+        <div class="detail-image-panel">
+
+            <div class="image-corner-label">
+                <i class="bi bi-bag-check-fill"></i>
+                M-CART Selection
+            </div>
+
+            {% if product.image %}
+                <img
+                    src="{{ product.image.url }}"
+                    class="detail-image"
+                    alt="{{ product.name }}"
+                >
+            {% else %}
+                <div class="detail-image-placeholder">
+                    <i class="bi bi-image"></i>
+                    <span>Product image unavailable</span>
+                </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- Product information column -->
+    <div class="col-lg-6">
+
+        <div class="detail-info">
+
+            <div class="detail-eyebrow">
+                Product details
+            </div>
+
+            <h1 class="detail-title">
+                {{ product.name }}
+            </h1>
+
+            <div>
+                <div class="detail-price">
+                    ₦{{ product.price|floatformat:2 }}
+                </div>
+
+                <div class="price-caption">
+                    Listed price in Nigerian naira
+                </div>
+            </div>
+
+            <hr class="detail-divider">
+
+            <h2 class="description-heading">
+                About this product
+            </h2>
+
+            <div class="detail-description">
+                {% if product.description %}
+                    {{ product.description|linebreaksbr }}
+                {% else %}
+                    More information about this product will be available soon.
+                {% endif %}
+            </div>
+
+            <!-- Stock status -->
+            {% if product.stock > 0 %}
+
+                <div class="detail-stock">
+
+                    <div class="stock-icon">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+
+                    <div>
+                        <div class="stock-title">
+                            Available to order
+                        </div>
+
+                        <div class="stock-description">
+                            {{ product.stock }} item{{ product.stock|pluralize }} currently in stock.
+                        </div>
+                    </div>
+
+                </div>
+
+            {% else %}
+
+                <div class="detail-stock stock-unavailable">
+
+                    <div class="stock-icon">
+                        <i class="bi bi-x-lg"></i>
+                    </div>
+
+                    <div>
+                        <div class="stock-title">
+                            Currently unavailable
+                        </div>
+
+                        <div class="stock-description">
+                            This product is out of stock at the moment.
+                        </div>
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+            <!-- Purchase actions -->
+            <div class="purchase-actions">
+
+                {% if product.stock > 0 %}
+
+                    <a
+                        href="{% url 'cart:add_to_cart' pk=product.pk %}"
+                        class="add-cart-btn"
+                    >
+                        <i class="bi bi-cart-plus"></i>
+                        Add to Cart
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+
+                {% else %}
+
+                    <span
+                        class="add-cart-btn disabled-btn"
+                        aria-disabled="true"
+                    >
+                        <i class="bi bi-cart-x"></i>
+                        Out of Stock
+                    </span>
+
+                {% endif %}
+
+                <a
+                    href="{% url 'Products:product_list' %}"
+                    class="back-to-store"
+                >
+                    <i class="bi bi-arrow-left"></i>
+                    Continue Shopping
+                </a>
+
+            </div>
+
+            <!-- Store information -->
+            <div class="detail-trust">
+
+                <div class="trust-item">
+                    <i class="bi bi-shield-check"></i>
+                    <div>
+                        <strong>Shop with confidence</strong>
+                        A clear and simple shopping experience.
+                    </div>
+                </div>
+
+                <div class="trust-item">
+                    <i class="bi bi-credit-card"></i>
+                    <div>
+                        <strong>Checkout securely</strong>
+                        Follow the checkout process to complete your order.
+                    </div>
+                </div>
+
+                <div class="trust-item">
+                    <i class="bi bi-box-seam"></i>
+                    <div>
+                        <strong>Order information</strong>
+                        Check your orders from your account.
+                    </div>
+                </div>
+
+                <div class="trust-item">
+                    <i class="bi bi-headset"></i>
+                    <div>
+                        <strong>Shopping made simple</strong>
+                        Find your products in one place.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="detail-bottom-note">
+                Product availability may change. Please confirm your order
+                details during checkout.
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

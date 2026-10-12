@@ -1,0 +1,319 @@
+
+{% extends "Products/base.html" %}
+
+{% block title %}Payment Successful | M-CART{% endblock %}
+
+{% block extra_css %}
+<style>
+    .success-page {
+        min-height: 68vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 55px 15px;
+        background:
+            radial-gradient(ellipse at top, #e7f9ef 0%, transparent 55%),
+            #f8f9fc;
+        border-radius: 20px;
+    }
+
+    .success-card {
+        width: 100%;
+        max-width: 600px;
+        padding: 45px 38px;
+        text-align: center;
+        background: #fff;
+        border: 1px solid #eaecf0;
+        border-radius: 24px;
+        box-shadow: 0 15px 45px rgba(16, 24, 40, .07);
+    }
+
+    .success-icon {
+        width: 95px;
+        height: 95px;
+        display: grid;
+        place-items: center;
+        margin: 0 auto 25px;
+        color: #fff;
+        background: #12a05c;
+        border: 8px solid #e5f8ee;
+        border-radius: 50%;
+        font-size: 2.8rem;
+        box-shadow: 0 0 0 8px #f3fcf6;
+        animation: successPop .55s ease-out both;
+    }
+
+    @keyframes successPop {
+        0% {
+            opacity: 0;
+            transform: scale(.65);
+        }
+        70% {
+            transform: scale(1.08);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .success-label {
+        display: inline-block;
+        padding: 7px 13px;
+        margin-bottom: 17px;
+        color: #087443;
+        background: #e5f8ee;
+        border-radius: 30px;
+        font-size: .78rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .success-card h1 {
+        margin-bottom: 13px;
+        color: #101828;
+        font-size: clamp(1.8rem, 5vw, 2.5rem);
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+
+    .success-description {
+        color: #667085;
+        font-size: 1rem;
+        line-height: 1.7;
+        margin-bottom: 28px;
+    }
+
+    .success-order-box {
+        padding: 22px;
+        margin: 25px 0;
+        background: #f8f9fc;
+        border: 1px solid #eaecf0;
+        border-radius: 15px;
+        text-align: left;
+    }
+
+    .success-order-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 0;
+    }
+
+    .success-order-row + .success-order-row {
+        border-top: 1px solid #eaecf0;
+    }
+
+    .success-order-label {
+        color: #667085;
+        font-size: .9rem;
+    }
+
+    .success-order-value {
+        color: #101828;
+        font-weight: 700;
+        text-align: right;
+        overflow-wrap: anywhere;
+    }
+
+    .success-total {
+        color: #087443;
+        font-size: 1.2rem;
+        font-weight: 800;
+    }
+
+    .success-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 15px;
+        margin: 20px 0;
+        color: #344054;
+        background: #fff8f3;
+        border: 1px solid #ffdfd0;
+        border-radius: 12px;
+        font-size: .9rem;
+        line-height: 1.6;
+        text-align: left;
+    }
+
+    .success-note i {
+        color: #ff6b35;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    .success-actions {
+        display: grid;
+        gap: 12px;
+        margin-top: 25px;
+    }
+
+    .success-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        min-height: 53px;
+        padding: 13px 18px;
+        border-radius: 11px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: .2s ease;
+    }
+
+    .success-btn-primary {
+        color: #fff;
+        background: #101828;
+        border: 1px solid #101828;
+    }
+
+    .success-btn-primary:hover {
+        color: #fff;
+        background: #25334a;
+        border-color: #25334a;
+        transform: translateY(-2px);
+    }
+
+    .success-btn-secondary {
+        color: #344054;
+        background: #fff;
+        border: 1px solid #d0d5dd;
+    }
+
+    .success-btn-secondary:hover {
+        color: #eb5420;
+        background: #fff5f0;
+        border-color: #ff6b35;
+    }
+
+    .success-footer {
+        margin: 25px 0 0;
+        color: #98a2b3;
+        font-size: .82rem;
+    }
+
+    .success-footer span {
+        color: #ff6b35;
+        font-weight: 800;
+    }
+
+    @media (max-width: 480px) {
+        .success-page {
+            padding: 30px 8px;
+        }
+
+        .success-card {
+            padding: 32px 20px;
+            border-radius: 18px;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            font-size: 2.3rem;
+        }
+
+        .success-order-box {
+            padding: 15px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .success-icon {
+            animation: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="success-page">
+        <section class="success-card">
+
+            <div class="success-icon">
+                <i class="bi bi-check-lg"></i>
+            </div>
+
+            <span class="success-label">
+                <i class="bi bi-shield-check"></i>
+                Payment confirmed
+            </span>
+
+            <h1>Payment Successful!</h1>
+
+            <p class="success-description">
+                Thank you for shopping with M-CART.
+                Your payment has been confirmed, and your order is ready
+                for the next step.
+            </p>
+
+            <div class="success-order-box">
+
+                <div class="success-order-row">
+                    <span class="success-order-label">Order Number</span>
+                    <span class="success-order-value">
+                        #{{ order.id }}
+                    </span>
+                </div>
+
+                <div class="success-order-row">
+                    <span class="success-order-label">Payment Status</span>
+                    <span class="success-order-value"
+                          style="color: #087443;">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Successful
+                    </span>
+                </div>
+
+                <div class="success-order-row">
+                    <span class="success-order-label">Total Paid</span>
+                    <span class="success-total">
+                        ₦{{ order.total_price|floatformat:2 }}
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="success-note">
+                <i class="bi bi-info-circle-fill"></i>
+                <div>
+                    <strong>What's next?</strong>
+                    <div>
+                        You can view your order details to review your
+                        delivery information and check your order status.
+                    </div>
+                </div>
+            </div>
+
+            <div class="success-actions">
+
+                <a href="{% url 'cart:order_detail' order.id %}"
+                   class="success-btn success-btn-primary">
+                    <i class="bi bi-receipt"></i>
+                    View Order Details
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
+                <a href="{% url 'Products:product_list' %}"
+                   class="success-btn success-btn-secondary">
+                    <i class="bi bi-shop"></i>
+                    Continue Shopping
+                </a>
+
+            </div>
+
+            <p class="success-footer">
+                Thank you for choosing <span>M-CART</span> 🧡
+                <br>
+                Shop Smart. Live Better.
+            </p>
+
+        </section>
+    </div>
+</div>
+{% endblock %}

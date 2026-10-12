@@ -1,0 +1,221 @@
+
+{% extends "Products/base.html" %}
+
+{% block title %}Payment Not Completed | M-CART{% endblock %}
+
+{% block extra_css %}
+<style>
+    .payment-result-page {
+        min-height: 65vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 55px 15px;
+        background:
+            radial-gradient(ellipse at top, #fff0e9 0%, transparent 55%),
+            #f8f9fc;
+        border-radius: 20px;
+    }
+
+    .payment-result-card {
+        width: 100%;
+        max-width: 570px;
+        background: #fff;
+        border: 1px solid #eaecf0;
+        border-radius: 24px;
+        padding: 45px 38px;
+        text-align: center;
+        box-shadow: 0 15px 45px rgba(16, 24, 40, .07);
+    }
+
+    .result-icon {
+        width: 88px;
+        height: 88px;
+        margin: 0 auto 25px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: #fff0ee;
+        color: #d92d20;
+        font-size: 2.7rem;
+        box-shadow: 0 0 0 10px #fff8f7;
+    }
+
+    .result-label {
+        display: inline-block;
+        padding: 7px 13px;
+        margin-bottom: 17px;
+        border-radius: 30px;
+        background: #fff0ee;
+        color: #b42318;
+        font-size: .78rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .payment-result-card h1 {
+        color: #101828;
+        font-size: clamp(1.7rem, 5vw, 2.3rem);
+        font-weight: 800;
+        letter-spacing: -.8px;
+        margin-bottom: 15px;
+    }
+
+    .result-message {
+        color: #475467;
+        font-size: 1.02rem;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
+        margin-bottom: 20px;
+    }
+
+    .result-info {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        text-align: left;
+        padding: 16px;
+        margin: 25px 0;
+        border-radius: 12px;
+        border: 1px solid #fedf89;
+        background: #fffaeb;
+        color: #854d0e;
+        font-size: .9rem;
+        line-height: 1.6;
+    }
+
+    .result-info i {
+        font-size: 1.25rem;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .result-actions {
+        display: grid;
+        gap: 12px;
+        margin-top: 25px;
+    }
+
+    .result-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        min-height: 52px;
+        padding: 13px 18px;
+        border-radius: 11px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: .2s ease;
+    }
+
+    .result-btn-primary {
+        background: #101828;
+        border: 1px solid #101828;
+        color: #fff;
+    }
+
+    .result-btn-primary:hover {
+        background: #25334a;
+        border-color: #25334a;
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
+    .result-btn-secondary {
+        background: #fff;
+        border: 1px solid #d0d5dd;
+        color: #344054;
+    }
+
+    .result-btn-secondary:hover {
+        background: #fff5f0;
+        border-color: #ff6b35;
+        color: #eb5420;
+    }
+
+    .result-footer {
+        margin: 25px 0 0;
+        color: #98a2b3;
+        font-size: .82rem;
+    }
+
+    .result-footer span {
+        color: #ff6b35;
+        font-weight: 800;
+    }
+
+    @media (max-width: 480px) {
+        .payment-result-page {
+            padding: 30px 8px;
+        }
+
+        .payment-result-card {
+            padding: 35px 21px;
+            border-radius: 18px;
+        }
+
+        .result-icon {
+            width: 75px;
+            height: 75px;
+            font-size: 2.3rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="payment-result-page">
+        <section class="payment-result-card">
+
+            <div class="result-icon">
+                <i class="bi bi-x-lg"></i>
+            </div>
+
+            <span class="result-label">
+                Payment unsuccessful
+            </span>
+
+            <h1>Payment Not Completed</h1>
+
+            <p class="result-message">
+                {{ message }}
+            </p>
+
+            <div class="result-info">
+                <i class="bi bi-info-circle-fill"></i>
+                <div>
+                    <strong>Don't worry!</strong>
+                    <div>
+                        Your order may still exist. Check your orders
+                        before trying to pay again to avoid duplicate payments.
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-actions">
+                <a href="{% url 'cart:my_orders' %}"
+                   class="result-btn result-btn-primary">
+                    <i class="bi bi-receipt"></i>
+                    View My Orders
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
+                <a href="{% url 'Products:product_list' %}"
+                   class="result-btn result-btn-secondary">
+                    <i class="bi bi-shop"></i>
+                    Continue Shopping
+                </a>
+            </div>
+
+            <p class="result-footer">
+                Shopping with <span>M-CART</span> · Shop Smart, Live Better
+            </p>
+
+        </section>
+    </div>
+</div>
+{% endblock %}

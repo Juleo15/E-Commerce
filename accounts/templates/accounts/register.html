@@ -1,0 +1,234 @@
+
+{% extends "Products/base.html" %}
+
+{% block title %}Create Account{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: #f4f6fa;
+    }
+
+    .register-wrapper {
+        max-width: 1050px;
+        margin: 25px auto;
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 15px 50px rgba(20, 30, 60, 0.10);
+    }
+
+    .register-banner {
+        background: linear-gradient(145deg, #172554, #243b70);
+        color: white;
+        padding: 55px 40px;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .register-banner h2 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        line-height: 1.25;
+    }
+
+    .register-banner p {
+        color: #dbe4ff;
+        line-height: 1.8;
+    }
+
+    .register-icon {
+        font-size: 3.5rem;
+        margin-bottom: 25px;
+    }
+
+    .register-form {
+        padding: 45px;
+    }
+
+    .register-form h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #172554;
+    }
+
+    .register-subtitle {
+        color: #737b8c;
+        margin-bottom: 28px;
+    }
+
+    .register-form label {
+        display: block;
+        font-size: .9rem;
+        font-weight: 600;
+        margin-bottom: 7px;
+        color: #30384a;
+    }
+
+    .register-form input {
+        display: block;
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #dce1eb;
+        border-radius: 10px;
+        background: #fbfcff;
+        outline: none;
+        transition: .2s;
+    }
+
+    .register-form input:focus {
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, .14);
+        background: white;
+    }
+
+    .field-group {
+        margin-bottom: 18px;
+    }
+
+    .helptext {
+        display: block;
+        color: #858b99;
+        font-size: .78rem;
+        margin-top: 6px;
+    }
+
+    .helptext ul {
+        padding-left: 18px;
+        margin-top: 7px;
+    }
+
+    .register-btn {
+        width: 100%;
+        padding: 13px;
+        background: #f59e0b;
+        color: #172033;
+        border: none;
+        border-radius: 10px;
+        font-weight: 800;
+        margin-top: 8px;
+        transition: .2s;
+    }
+
+    .register-btn:hover {
+        background: #e58b00;
+        transform: translateY(-1px);
+    }
+
+    .register-bottom {
+        text-align: center;
+        color: #737b8c;
+        font-size: .9rem;
+        margin-top: 22px;
+    }
+
+    .register-bottom a {
+        color: #d97706;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .errorlist {
+        color: #dc3545;
+        font-size: .85rem;
+        padding-left: 18px;
+        margin-top: 6px;
+    }
+
+    @media (max-width: 767px) {
+        .register-banner {
+            padding: 35px 25px;
+        }
+
+        .register-banner h2 {
+            font-size: 1.7rem;
+        }
+
+        .register-form {
+            padding: 30px 22px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-wrapper">
+    <div class="row g-0">
+
+        <div class="col-md-5">
+            <div class="register-banner">
+                <div class="register-icon">🛍️</div>
+                <h2>Your next favourite thing is waiting.</h2>
+                <p class="mt-3">
+                    Join M-CART and enjoy a simpler shopping experience.
+                    Discover products, manage your cart, and track your orders
+                    in one place.
+                </p>
+
+                <div class="mt-3">
+                    <p>✓ Easy and convenient shopping</p>
+                    <p>✓ Track your orders</p>
+                    <p>✓ Secure payment verification</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <div class="register-form">
+
+                <h1>Create your account</h1>
+                <p class="register-subtitle">
+                    Sign up to get started with M-CART.
+                </p>
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                        <div class="field-group">
+
+                            <label for="{{ field.id_for_label }}">
+                                {{ field.label }}
+                            </label>
+
+                            {{ field }}
+
+                            {% if field.help_text %}
+                                <div class="helptext">
+                                    {{ field.help_text|safe }}
+                                </div>
+                            {% endif %}
+
+                            {% for error in field.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+                    {% endfor %}
+
+                    <button type="submit" class="register-btn">
+                        Create Account →
+                    </button>
+                </form>
+
+                <div class="register-bottom">
+                    Already have an account?
+                    <a href="{% url 'accounts:login' %}">Log in</a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
